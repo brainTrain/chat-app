@@ -1,4 +1,5 @@
 import React from 'react';
+import sillyname from 'sillyname';
 import './App.css';
 import { socket, initSocket } from './socket';
 import {
@@ -18,8 +19,11 @@ class App extends React.Component {
   }
 
   componentDidMount () {
+    const username = sillyname();
     const socketOptions = {
-      path: SOCKET_ENDPOINT
+      path: SOCKET_ENDPOINT,
+      query: `username=${username}`
+
     };
 
     initSocket(SOCKET_BASE_URL, socketOptions, this.handleInitSocket);

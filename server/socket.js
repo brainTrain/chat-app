@@ -1,17 +1,31 @@
+const {
+  SOCKET_CONNECT_EVENT,
+  SOCKET_MESSAGE_EVENT
+} = require('./constants');
+
 // socket.io chat instantiation/listeners
 const chatIo = function (http) {
   const io = require('socket.io')(http, { path: '/chat' });
 
-  io.on('connection', function (socket) {
-    const connectionId = socket.id;
+  io.on(SOCKET_CONNECT_EVENT, function (socket) {
+    const {
+      id,
+      handshake: {
+        query: {
+          username
+        }
+      }
+    } = socket;
 
-    socket.on('message', function (message) {
-      console.log('ohhai a chat message', message);
+
+    socket.on(SOCKET_MESSAGE_EVENT, function (message) {
       const messagePayload = {
-        connectionId,
+        connectionId: id,
+        username,
         text: message
       };
-      socket.emit('message', messagePayload);
+
+      io.emit(SOCKET_MESSAGE_EVENT, messagePayload);
     });
 
     socket.on('disconnect', function () {
