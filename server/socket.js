@@ -3,11 +3,15 @@ const chatIo = function (http) {
   const io = require('socket.io')(http, { path: '/chat' });
 
   io.on('connection', function (socket) {
-    console.log('socket connected');
+    const connectionId = socket.id;
 
     socket.on('message', function (message) {
       console.log('ohhai a chat message', message);
-      socket.emit('message', message);
+      const messagePayload = {
+        connectionId,
+        text: message
+      };
+      socket.emit('message', messagePayload);
     });
 
     socket.on('disconnect', function () {

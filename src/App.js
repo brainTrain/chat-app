@@ -3,11 +3,20 @@ import './App.css';
 import { socket, initSocket } from './socket';
 import {
   SOCKET_BASE_URL,
-  SOCKET_ENDPOINT
+  SOCKET_CONNECT_EVENT,
+  SOCKET_ENDPOINT,
+  SOCKET_MESSAGE_EVENT
 } from './constants'
+import ChatForm from './ChatForm';
+import ChatMessages from './ChatMessages';
 
 
 class App extends React.Component {
+  state = {
+    isSocketConnected: false,
+    messages: []
+  }
+
   componentDidMount () {
     const socketOptions = {
       path: SOCKET_ENDPOINT
@@ -17,32 +26,34 @@ class App extends React.Component {
   }
 
   handleInitSocket = () => {
-    socket.on('connect', this.handleSocketConnected);
-    socket.on('message', this.handleSocketMessage);
+    socket.on(SOCKET_CONNECT_EVENT, this.handleSocketConnected);
+    socket.on(SOCKET_MESSAGE_EVENT, this.handleSocketMessage);
   }
 
   handleSocketConnected = () => {
-    console.log('ohhai a socket connection!');
+    this.setState({ isSocketConnected: true });
   }
 
   handleSocketMessage = (message) => {
     console.log('woah a message?', message);
-  }
+    const { messages } = this.state;
+    const newMessages = [ ...messages, message];
 
-  handleChatForm = (event) => {
-    event.preventDefault();
-    socket.emit('message', 'sup?');
+    this.setState({ messages: newMessages });
   }
 
   render () {
+    const {
+      isSocketConnected,
+      messages
+    } = this.state;
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <form onSubmit={this.handleChatForm}>
-            <input type="text" />
-            <button>Send Chat</button>
-          </form>
-        </header>
+      <div className="App-content">
+        <ChatMessages
+          messages={messages}
+        />
+        <ChatForm />
       </div>
     );
   }
