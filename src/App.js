@@ -1,28 +1,22 @@
 import React from 'react';
-import socketIO from 'socket.io-client';
 import './App.css';
+import { socket, initSocket } from './socket';
 import {
   SOCKET_BASE_URL,
   SOCKET_ENDPOINT
 } from './constants'
 
-const socketOptions = {
-  path: SOCKET_ENDPOINT
-};
 
 class App extends React.Component {
-  state = {
-    socket: {}
-  }
-
   componentDidMount () {
-    this.initSocket();
+    const socketOptions = {
+      path: SOCKET_ENDPOINT
+    };
+
+    initSocket(SOCKET_BASE_URL, socketOptions, this.handleInitSocket);
   }
 
-  initSocket = () => {
-    const socket = socketIO(SOCKET_BASE_URL, socketOptions);
-    this.setState({ socket });
-
+  handleInitSocket = () => {
     socket.on('connect', this.handleSocketConnected);
     socket.on('message', this.handleSocketMessage);
   }
@@ -36,7 +30,6 @@ class App extends React.Component {
   }
 
   handleChatForm = (event) => {
-    const { socket } = this.state;
     event.preventDefault();
     socket.emit('message', 'sup?');
   }
