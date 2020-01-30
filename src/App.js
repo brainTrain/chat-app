@@ -1,5 +1,6 @@
 import React from 'react';
 import sillyname from 'sillyname';
+import { Helmet } from 'react-helmet';
 import './App.css';
 import { socket, initSocket } from './socket';
 import {
@@ -23,7 +24,6 @@ class App extends React.Component {
     const socketOptions = {
       path: SOCKET_ENDPOINT,
       query: `username=${username}`
-
     };
 
     initSocket(SOCKET_BASE_URL, socketOptions, this.handleInitSocket);
@@ -35,7 +35,12 @@ class App extends React.Component {
   }
 
   handleSocketConnected = () => {
-    this.setState({ isSocketConnected: true });
+    const { id } = socket;
+
+    this.setState({
+      isSocketConnected: true,
+      socketId: id
+    });
   }
 
   handleSocketMessage = (message) => {
@@ -54,8 +59,11 @@ class App extends React.Component {
 
     return (
       <div className="App-content">
+        <Helmet>
+          <html lang="en" />
+        </Helmet>
         <ChatMessages
-          messages={messages}
+          messages={ messages }
         />
         <ChatForm />
       </div>

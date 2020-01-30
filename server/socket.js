@@ -1,5 +1,6 @@
 const {
   SOCKET_CONNECT_EVENT,
+  SOCKET_DISCONNECT_EVENT,
   SOCKET_MESSAGE_EVENT
 } = require('./constants');
 
@@ -28,7 +29,7 @@ const chatIo = function (http) {
       io.emit(SOCKET_MESSAGE_EVENT, messagePayload);
     });
 
-    socket.on('disconnect', function () {
+    socket.on(SOCKET_DISCONNECT_EVENT, function () {
       console.log('socket disconnected');
     });
   });

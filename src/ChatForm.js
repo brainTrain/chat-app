@@ -31,13 +31,17 @@ class App extends React.Component {
 
     return (
       <form onSubmit={this.handleChatForm}>
+        <label htmlFor="chat-input">
+          Chat Input
+        </label>
         <input
           name="chat-input"
+          id="chat-input"
           type="text"
           onChange={this.handleChatInputChange}
           value={chatInput}
         />
-        <button>Send Chat</button>
+        <button type="submit">Send Chat</button>
       </form>
     );
   }
